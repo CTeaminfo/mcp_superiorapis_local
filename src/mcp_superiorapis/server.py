@@ -89,9 +89,6 @@ async def fetch_api_data():
         params = {
             "application_id": APPLICATION_ID
         }
-        print(params)
-        print(headers)
-        print(url)
         async with session.post(url, headers=headers, json=params) as response:
             if response.status != 200:
                 raise Exception(f"API request failed with status {response.status}")
@@ -158,28 +155,33 @@ async def register_tools():
         """
         動態處理 Tool，呼叫對應 API
         """
-
+        print(f"handle_call_tool...{name}", file=sys.stderr)
         # 依 tool name 取得對應 API 設定
         api_info = next((f for f in functions if f["function_name"] == name), None)
         if not api_info:
             raise ValueError(f"Unknown tool: {name}")
 
-        if not arguments:
-            raise ValueError("Missing arguments")
-
         method = api_info['method'].lower()
         path = api_info['path']
         api_endpoint = f"https://superiorapis-creator.cteam.com.tw{path}"
         headers = {"token": TOKEN}
-
+        print(f"API endpoint: {api_endpoint}")
+        print(f"Headers: {headers}")
+        print(f"Arguments: {arguments}")
         try:
             async with aiohttp.ClientSession() as session:
-                async with getattr(session, method)(api_endpoint, headers=headers, json=arguments) as response:
-                    result = await response.json()
-                    if response.status == 200:
-                        content = json.dumps(result, ensure_ascii=False)
-                    else:
-                        content = json.dumps({"error": f"API failed with status code: {response.status}"}, ensure_ascii=False)
+                if method == 'get':
+                    async with session.get(api_endpoint, headers=headers, params=arguments or {}) as response:
+                        result = await response.json()
+                else:
+                    async with getattr(session, method)(api_endpoint, headers=headers, json=arguments or {}) as response:
+                        result = await response.json()
+
+                if response.status == 200:
+                    content = json.dumps(result, ensure_ascii=False)
+                else:
+                    content = json.dumps({"error": f"API failed with status code: {response.status}"}, ensure_ascii=False)
+
         except Exception as e:
             content = json.dumps({"error": f"API request error: {str(e)}"}, ensure_ascii=False)
 
@@ -194,7 +196,6 @@ async def register_tools():
 
 async def main():
     print("Starting MCP server...")
-
     await register_tools()
     # Run the server using stdin/stdout streams
     async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
