@@ -30,7 +30,7 @@ The server will:
 ## ⚙️ Installation
 Clone the project and install the dependencies:
 ```bash
-git clone https://your-repo-url.git
+git clone https://github.com/CTeaminfo/mcp-superiorapis.git
 cd your-repo
 pip install -r requirements.txt
 ```
@@ -41,7 +41,6 @@ Before running, set the following environment variables:
 **Linux/macOS**
 ```bash
 export TOKEN=your_token_here
-export APPLICATION_ID=your_application_id_here
 ```
 
 **Windows CMD**
@@ -62,11 +61,6 @@ The server will:
 3. Register the tools
 4. Start the MCP server
 
-## 🔗 API Endpoint
-Plugin definitions are fetched from:
-```
-https://superiorapis-creator.cteam.com.tw/manager/module/plugins/list_v2
-```
 Authorization is required via the `token` header.
 
 ## 🧠 Example Generated Tool Function
@@ -112,12 +106,12 @@ pip install dist/mcp-superiorapis-1.0.0-py3-none-any.whl
 Run using Docker (if needed):
 ```bash
 docker build -t superiorapis-mcp .
-docker run -e TOKEN=your_token -e APPLICATION_ID=your_app_id superiorapis-mcp
+docker run -e TOKEN=your_token superiorapis-mcp
 ```
 
 ## 📄 License
 MIT License (or your custom license)
 
 ## 👨‍💻 Author
-Your Name / Your Company  
-Contact: your_email@example.com
+Marcus / CTeam
+Contact: info@cteam.com.tw

@@ -17,13 +17,11 @@ server = Server("mcp-superiorapis")
 
 # Get credentials from environment variables
 TOKEN = os.getenv("TOKEN")
-APPLICATION_ID = os.getenv("APPLICATION_ID")
 
 
 # Add this check at the top of your file
 print(f"Running environment: Python {sys.version}", file=sys.stderr)
 print(f"TOKEN environment variable: {'set (length: ' + str(len(TOKEN)) + ')' if TOKEN else 'not set'}", file=sys.stderr)
-print(f"APPLICATION_ID environment variable: {'set (' + APPLICATION_ID + ')' if APPLICATION_ID else 'not set'}", file=sys.stderr)
 
 
 def flatten_enum(schema):
@@ -77,19 +75,17 @@ def flatten_enum(schema):
 
     return schema
 async def fetch_api_data():
-    if not TOKEN or not APPLICATION_ID:
-        raise ValueError("TOKEN and APPLICATION_ID environment variables must be set")
+    if not TOKEN:
+        raise ValueError("TOKEN environment variables must be set")
     
     async with aiohttp.ClientSession() as session:
-        url = "https://superiorapis-creator.cteam.com.tw/manager/module/plugins/list_v2"
+        url = "https://superiorapis-creator.cteam.com.tw/manager/module/plugins/list_v3"
         headers = {
             "token": f"{TOKEN}", 
             "Content-Type": "application/json"
         }
-        params = {
-            "application_id": APPLICATION_ID
-        }
-        async with session.post(url, headers=headers, json=params) as response:
+
+        async with session.post(url, headers=headers) as response:
             if response.status != 200:
                 raise Exception(f"API request failed with status {response.status}")
             return await response.json()
