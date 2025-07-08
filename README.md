@@ -1,117 +1,137 @@
-# SuperiorAPIs MCP Server Tool
+# MCP SuperiorAPIs Local
 
-## 📖 Description
-This project is a Python-based **MCP Server** that dynamically fetches plugin definitions from **SuperiorAPIs** and auto-generates MCP tool functions based on OpenAPI schemas.
+This project is a Python-based **MCP Server** that dynamically retrieves plugin definitions from **SuperiorAPIs** and auto-generates MCP tool functions based on their OpenAPI schemas.
 
-The server will:
-- Fetch plugin metadata
-- Parse the schema
-- Generate tool functions dynamically
-- Run the MCP server
+It operates in `stdio` mode, making it ideal for local development and testing with AI clients.
 
-## 🚀 Features
-- Dynamic plugin loading from **SuperiorAPIs**
-- Auto-generation of `pydantic` models and async functions
-- Asynchronous API execution using `aiohttp`
-- Runtime MCP tool registration
-- Supports environment-based configuration
-- Ready for UVX platform deployment
+If you need to integrate using HTTP or SSE protocols, please refer to: [CTeaminfo/mcp_superiorapis_remote](https://github.com/CTeaminfo/mcp_superiorapis_remote)
 
 ## 📂 Project Structure
+
 ```
-.
-├── main.py                 # MCP server core logic
-├── requirements.txt        # Python dependency list
-├── setup.py                # Packaging setup
-├── Dockerfile              # (Optional) Docker container build file
-└── README.md               # Project documentation
+mcp_superiorapis_local/
+├── src/mcp_superiorapis_local/     # Main program
+│   ├── __init__.py           # Package initialization
+│   └── server.py             # MCP server implementation
+├── tests/                    # Test files
+├── pyproject.toml            # Project config & dependencies
+├── uv.lock                   # Locked dependencies
+└── README.md                 # Project documentation (this file)
 ```
 
-## ⚙️ Installation
-Clone the project and install the dependencies:
+## 🚀 Quick Start
+
+### 1. Environment Preparation
+
+**Prerequisites:**
+- Python 3.13+
+- Superior APIs Token ([How to get](https://superiorapis-creator.cteam.com.tw))
+
+### 2. Clone the Project
+
 ```bash
-git clone https://github.com/CTeaminfo/mcp-superiorapis.git
-cd your-repo
-pip install -r requirements.txt
+# Using HTTPS
+git clone https://github.com/CTeaminfo/mcp_superiorapis_local.git
+
+# Using SSH
+git clone git@github.com:CTeaminfo/mcp_superiorapis_local.git
+cd mcp_superiorapis_local
 ```
 
-## 🌍 Environment Variables
-Before running, set the following environment variables:
+### 3. Install uv (if not installed)
 
-**Linux/macOS**
 ```bash
-export TOKEN=your_token_here
+# macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Or use pip
+pip install uv
 ```
 
-**Windows CMD**
-```cmd
-set TOKEN=your_token_here
-set APPLICATION_ID=your_application_id_here
-```
+### 4. Install Dependencies
 
-## 🖥️ Usage
-Run the MCP server:
 ```bash
-python main.py
+# Create virtual environment
+uv venv --python 3.13
+
+# Install dependencies
+uv sync
+
+# Or use pip
+pip install -e .
 ```
+
+### 5. Configure Environment Variables
+
+```bash
+# Set your Superior APIs token
+export TOKEN=your_superior_apis_token_here
+
+# Windows CMD
+set TOKEN=your_superior_apis_token_here
+```
+
+**Token Authentication Instructions:**
+- Get your token from [Superior APIs](https://superiorapis-creator.cteam.com.tw)
+- Set the TOKEN environment variable before running the server
+
+### 6. Start the Server
+
+```bash
+
+python src/mcp_superiorapis_local/server.py
+```
+
+### 7. Verify Deployment
 
 The server will:
 1. Fetch plugin data from SuperiorAPIs
 2. Dynamically generate MCP tool functions
 3. Register the tools
-4. Start the MCP server
+4. Start the MCP server in stdio mode
 
-Authorization is required via the `token` header.
+## 🔌 MCP Client Integration
 
-## 🧠 Example Generated Tool Function
-```python
-@mcp.tool()
-async def post_example_tool(param1: Optional[str] = None, param2: Optional[int] = None) -> str:
-    """
-    Tool description | API summary.
+### With uvx on Pip
 
-    # Args:
-        param1 (string, optional): Description of param1.
-        param2 (integer, optional): Description of param2.
+Configure MCP server with uvx on pip(No need to download source code):
 
-    # Returns:
-        200 (object): API response.
-    """
+```json
+{
+  "mcpServers": {
+    "mcp_superiorapis_local": {
+      "command": "uvx",
+      "args": [
+        "mcp-superiorapis" // https://pypi.org/project/mcp-superiorapis/
+      ],
+      "env": {
+        "TOKEN": "your_superior_apis_token_here"
+      }
+    }
+  }
+}
 ```
 
-## 📜 Requirements
-```
-aiohttp>=3.8.6
-pydantic>=2.5.3
-mcp-sdk>=0.1.0
-```
+### Local Mode
 
-## ❗ Error Handling
-If the API call fails or returns `status: 0`, the program will exit with:
+```json
+{
+  "mcp_superiorapis_local": {
+    "command": "uv",
+    "args": [
+      "run",
+      "--directory",
+      "/path/to/mcp_superiorapis_local",
+      "python",
+      "-m",
+      "mcp_superiorapis_local"
+    ],
+    "env": {
+      "TOKEN": "your_superior_apis_token_here"
+    }
+  }
+}
 ```
-❌ Error: API returned no data or status is 0. Please check if the API is working properly.
-```
-
-## 📦 Packaging (Optional)
-Build the package:
-```bash
-python setup.py sdist bdist_wheel
-```
-
-Install the package:
-```bash
-pip install dist/mcp-superiorapis-1.0.0-py3-none-any.whl
-```
-
-Run using Docker (if needed):
-```bash
-docker build -t superiorapis-mcp .
-docker run -e TOKEN=your_token superiorapis-mcp
-```
-
-## 📄 License
-MIT License (or your custom license)
-
-## 👨‍💻 Author
-Marcus / CTeam
-Contact: info@cteam.com.tw

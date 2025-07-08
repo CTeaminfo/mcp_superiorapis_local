@@ -1,5 +1,5 @@
 [project]
-name = "mcp-superiorapis"
+name = "mcp_superiorapis_local"
 version = "1.1.9"
 description = "This project is a Python-based **MCP Server** that dynamically fetches plugin definitions from **SuperiorAPIs** and auto-generates MCP tool functions based on OpenAPI schemas."
 readme = "README.md"
@@ -14,4 +14,4 @@ requires = [ "hatchling",]
 build-backend = "hatchling.build"
 
 [project.scripts]
-mcp-superiorapis = "mcp_superiorapis:main"
+mcp_superiorapis_local = "mcp_superiorapis_local:main"

@@ -13,7 +13,7 @@ from typing import Any, Dict, Optional, Union, List, Tuple, get_origin, get_args
 # Store notes as a simple key-value dict to demonstrate state management
 notes: dict[str, str] = {}
 
-server = Server("mcp-superiorapis")
+server = Server("mcp_superiorapis_local")
 
 # Get credentials from environment variables
 TOKEN = os.getenv("TOKEN")
@@ -199,7 +199,7 @@ async def main():
             read_stream,
             write_stream,
             InitializationOptions(
-                server_name="mcp-superiorapis",
+                server_name="mcp_superiorapis_local",
                 server_version="0.1.0",
                 capabilities=server.get_capabilities(
                     notification_options=NotificationOptions(),
@@ -208,6 +208,6 @@ async def main():
             ),
         )
 
-if __name__ == "mcp_superiorapis.server":
+if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
